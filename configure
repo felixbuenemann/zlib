@@ -815,7 +815,7 @@ EOF
     echo "Checking for PCLMUL support ... No" | tee -a configure.log
   fi
 
-elif [ x$TGT_ARCH = "xaarch64" ] ; then
+elif [ x$TGT_ARCH = "xaarch64" ] || [ x$TGT_ARCH = "xarm64" ]; then
 
   # Check for NEON and CRC support
 cat > $test.c << EOF

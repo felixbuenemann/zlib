@@ -135,7 +135,7 @@ static const config configuration_table[10] = {
 /* rank Z_BLOCK between Z_NO_FLUSH and Z_PARTIAL_FLUSH */
 #define RANK(f) (((f) << 1) - ((f) > 4 ? 9 : 0))
 
-#ifdef __aarch64__
+#if defined __aarch64__ || defined __arm64__
 
 #include <arm_neon.h>
 #include <arm_acle.h>
@@ -1353,7 +1353,7 @@ static void fill_window(s)
             s->block_start -= (int64_t) wsize;
             n = s->hash_size;
 
-#ifdef __aarch64__
+#if defined __aarch64__ || defined __arm64__
 
             uint16x8_t  W;
             uint16_t   *q ;

@@ -28,7 +28,7 @@
  #endif
 #endif
 
-#ifdef __aarch64__
+#if defined(__aarch64__) || defined(__arm64__)
 
 #include <arm_neon.h>
 #include <arm_acle.h>

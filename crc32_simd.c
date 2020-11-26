@@ -184,11 +184,11 @@ uint32_t ZLIB_INTERNAL crc32_sse42_simd_(  /* SSE4.2+PCLMUL */
 #define __crc32w __builtin_arm_crc32w
 #define __crc32cw __builtin_arm_crc32cw
 
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(__arm64__)
 #define TARGET_ARMV8_WITH_CRC __attribute__((target("crc")))
-#else  // !defined(__aarch64__)
+#else  // !defined(__aarch64__) || defined(__arm64__)
 #define TARGET_ARMV8_WITH_CRC __attribute__((target("armv8-a,crc")))
-#endif  // defined(__aarch64__)
+#endif  // defined(__aarch64__) || defined(__arm64__)
 
 #elif defined(__GNUC__)
 /* For GCC, we are setting CRC extensions at module level, so ThinLTO is not
@@ -196,7 +196,7 @@ uint32_t ZLIB_INTERNAL crc32_sse42_simd_(  /* SSE4.2+PCLMUL */
  */
 #include <arm_acle.h>
 #define TARGET_ARMV8_WITH_CRC
-#else  // !defined(__GNUC__) && !defined(_aarch64__)
+#else  // !defined(__GNUC__) && !defined(_aarch64__) && !defined(__arm64__)
 #error ARM CRC32 SIMD extensions only supported for Clang and GCC
 #endif
 
