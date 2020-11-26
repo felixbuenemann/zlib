@@ -28,6 +28,17 @@
  #endif
 #endif
 
+#ifdef MAKECRCH
+#  include <stdio.h>
+#  ifndef DYNAMIC_CRC_TABLE
+#    define DYNAMIC_CRC_TABLE
+#  endif /* !DYNAMIC_CRC_TABLE */
+#endif /* MAKECRCH */
+
+#include "zutil.h"      /* for STDC and FAR definitions */
+
+#define local static
+
 #if defined(__aarch64__) || defined(__arm64__)
 
 #include <arm_neon.h>
@@ -35,7 +46,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-uint32_t crc32(uint32_t crc, uint8_t *buf, size_t len) {
+uint32_t crc32_armv8_little(uint32_t crc, const uint8_t *buf, size_t len) {
     crc = ~crc;
 
     while (len >= 8) {
@@ -59,18 +70,15 @@ uint32_t crc32(uint32_t crc, uint8_t *buf, size_t len) {
     return ~crc;
 }
 
+uLong crc32(crc, buf, len)
+    uLong crc;
+    const Bytef *buf;
+    uInt len;
+{
+    return crc32_armv8_little(crc, buf, len);
+}
+
 #else
-
-#ifdef MAKECRCH
-#  include <stdio.h>
-#  ifndef DYNAMIC_CRC_TABLE
-#    define DYNAMIC_CRC_TABLE
-#  endif /* !DYNAMIC_CRC_TABLE */
-#endif /* MAKECRCH */
-
-#include "zutil.h"      /* for STDC and FAR definitions */
-
-#define local static
 
 /* Definitions for doing the crc four data bytes at a time. */
 #if !defined(NOBYFOUR) && defined(Z_U4)
@@ -450,6 +458,8 @@ local unsigned long crc32_big(crc, buf, len)
 
 #endif /* BYFOUR */
 
+#endif /* !defined(__aarch64__) && !defined(__arm64__) */
+
 #define GF2_DIM 32      /* dimension of GF(2) vectors (length of CRC) */
 
 /* ========================================================================= */
@@ -552,5 +562,3 @@ uLong ZEXPORT crc32_combine64(crc1, crc2, len2)
 {
     return crc32_combine_(crc1, crc2, len2);
 }
-
-#endif
